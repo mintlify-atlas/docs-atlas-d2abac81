@@ -1,0 +1,71 @@
+---
+title: "Receiving Bitcoin"
+description: "How to share your Bitcoin address and request payments using QR codes, NFC, and Bitcoin URIs."
+---
+
+## Your receive address
+
+When you open Bitcoin Wallet, the main screen displays your current receive address as a scannable QR code. Anyone with a Bitcoin wallet can scan this code to send you funds.
+
+<Note>
+  Bitcoin Wallet uses SegWit Bech32 addresses by default. These addresses start with `bc1q` and produce smaller, cheaper transactions compared to legacy formats.
+</Note>
+
+## Request a specific amount
+
+<Steps>
+  <Step title="Open the request screen">
+    Tap **Request** on the main screen to open the payment request dialog.
+  </Step>
+  <Step title="Enter an optional amount">
+    Type the amount you want to receive in BTC or in your local currency. The two fields stay in sync using the current exchange rate.
+  </Step>
+  <Step title="Share your payment request">
+    The screen displays a QR code encoding the full Bitcoin URI. Use the share or copy options in the toolbar to send the URI to the payer via any messaging app, email, or another channel.
+  </Step>
+</Steps>
+
+## Bitcoin URI format for sharing
+
+When you tap **Request**, the app generates a Bitcoin URI in the BIP-21 format:
+
+```text
+bitcoin:<address>?amount=<btc>&label=<label>
+```
+
+**Example**
+
+```text
+bitcoin:bc1q66u53meh4n3a9crmx7fhgphhw975llz00m8jda?amount=0.005&label=Coffee
+```
+
+The payer's wallet reads this URI and pre-fills the send form — they do not need to type anything manually.
+
+## Request to a legacy address
+
+Some older wallets do not support Bech32 (`bc1q…`) addresses. On the request screen, you can switch to a legacy Base58 address so those senders can pay you without errors.
+
+<Note>
+  Legacy addresses work with all wallets but result in slightly larger and more expensive transactions for the sender. Use Bech32 addresses whenever the sender's wallet supports them.
+</Note>
+
+## Receive via NFC
+
+If both devices have NFC enabled, you can exchange a payment request without scanning a QR code:
+
+<Steps>
+  <Step title="Open the request screen">
+    Tap **Request** and optionally enter an amount.
+  </Step>
+  <Step title="Hold the devices together">
+    Hold your device close to the payer's NFC-capable Android device. The payment request is transmitted automatically and the payer's send dialog opens with the fields filled in.
+  </Step>
+</Steps>
+
+<Note>
+  NFC must be enabled in your device's settings. The range is typically a few centimetres — hold the devices back-to-back for the best result.
+</Note>
+
+## Address rotation
+
+Bitcoin Wallet automatically rotates your receive address after it has received funds. The old address remains valid and is still watched for incoming payments, but the main screen and **Request** dialog will show a fresh unused address. This behaviour improves privacy by making it harder to link separate payments to the same wallet.

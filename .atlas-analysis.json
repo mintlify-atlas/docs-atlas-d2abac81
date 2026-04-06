@@ -1,0 +1,110 @@
+{
+  "projectType": "saas",
+  "projectName": "Bitcoin Wallet",
+  "projectDescription": "A standalone Bitcoin payment app for Android that runs a full node, requiring no centralized backend.",
+  "theme": "almond",
+  "primaryColor": "#48a84e",
+  "lightColor": "#1c8620",
+  "darkColor": "#0a0d0b",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "User Guide",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "first-steps"
+            ]
+          },
+          {
+            "group": "Using the Wallet",
+            "pages": [
+              "sending-bitcoin",
+              "receiving-bitcoin",
+              "address-book",
+              "exchange-rates"
+            ]
+          },
+          {
+            "group": "Security & Backup",
+            "pages": [
+              "backup-restore",
+              "spending-pin",
+              "paper-wallet-sweep"
+            ]
+          },
+          {
+            "group": "Advanced Features",
+            "pages": [
+              "nfc-payments",
+              "bluetooth-payments",
+              "network-monitor",
+              "settings"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Guide",
+        "groups": [
+          {
+            "group": "Building",
+            "pages": [
+              "dev/prerequisites",
+              "dev/building",
+              "dev/reproducible-build"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "dev/architecture",
+              "dev/bitcoinj-integration",
+              "dev/supported-bips"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "dev/translations",
+              "dev/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Standalone Bitcoin node — no centralized backend required",
+    "HD wallet with BIP-32 deterministic key derivation",
+    "Native SegWit (Bech32) and Taproot (Bech32m) address support",
+    "Offline payments via NFC and Bluetooth",
+    "Encrypted wallet backups to Google Drive / Storage Access Framework",
+    "Paper wallet sweeping (including BIP-38 password-protected keys)",
+    "Dynamic network fees with economic, normal, and priority categories",
+    "Exchange rate display via CoinGecko (BTC, mBTC, µBTC, sat denominations)",
+    "Network monitor with peer and block list",
+    "Spending PIN protection with scrypt key derivation",
+    "QR code scanning and generation",
+    "Testnet and Mainnet support"
+  ],
+  "publicApiSurface": [
+    "WalletApplication — Application singleton managing wallet lifecycle",
+    "BlockchainService — Background service for P2P node and blockchain sync",
+    "WalletActivity — Main activity (transaction list, balance, QR address)",
+    "SendCoinsActivity — Send payment flow with fee selection",
+    "RequestCoinsActivity — Generate payment request QR / URI",
+    "SweepWalletActivity — Sweep paper wallet private keys",
+    "BackupWalletDialogFragment — Encrypted backup to cloud/storage",
+    "RestoreWalletDialogFragment — Restore wallet from backup",
+    "AddressBookActivity — Manage saved Bitcoin addresses",
+    "ExchangeRatesActivity — Browse live exchange rates",
+    "NetworkMonitorActivity — Inspect connected peers and recent blocks",
+    "Constants.ENABLE_EXCHANGE_RATES — Compile-time feature flag",
+    "Constants.ENABLE_SWEEP_WALLET — Compile-time feature flag",
+    "Constants.ENABLE_BLOCKCHAIN_SYNC — Compile-time feature flag"
+  ]
+}

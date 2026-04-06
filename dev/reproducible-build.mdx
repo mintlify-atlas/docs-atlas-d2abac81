@@ -1,0 +1,54 @@
+---
+title: "Reproducible build"
+description: "How to produce a byte-for-byte reproducible APK using buildah and disorderfs."
+---
+
+Bitcoin Wallet supports reproducible builds using a container-based workflow. The build is defined in `build.Containerfile` and can be executed with **buildah**, Docker, or Podman. Using buildah with FUSE provides the highest level of reproducibility by sorting filesystem directory entries.
+
+## How the container build works
+
+The `build.Containerfile` performs the following steps:
+
+1. Starts from `debian:bullseye-backports` and installs `disorderfs`, `openjdk-11-jdk-headless`, `gradle`, and `sdkmanager`.
+2. Copies the project source into the container as an unprivileged `builder` user.
+3. Accepts all Android SDK licenses automatically via `sdkmanager`.
+4. If `/dev/fuse` is available, mounts the project directory through `disorderfs` with sorted, non-reversed directory entries to ensure deterministic ordering before the build.
+5. Runs `gradle clean :wallet:assembleRelease` with `--no-build-cache --no-daemon --no-parallel` to produce unsigned release APKs.
+6. Unmounts the disorderfs overlay when done.
+7. Exports the unsigned APKs from the build container to the host output directory using a `scratch` export stage.
+
+## Build the APK reproducibly
+
+<Steps>
+  <Step title="Run the container build">
+    From the root of the repository, run:
+
+    ```bash
+    buildah build --cap-add sys_admin --device /dev/fuse --file build.Containerfile --output build/ .
+    ```
+
+    The unsigned APKs are written to the `build/` directory on the host.
+
+    <Note>
+      `--cap-add sys_admin` and `--device /dev/fuse` are required so the build can mount disorderfs inside the container. disorderfs sorts the project directory entries before the build runs, which ensures the APK output is deterministic regardless of the underlying filesystem's directory ordering.
+    </Note>
+  </Step>
+
+  <Step title="Verify the output">
+    The unsigned APK — apart from the missing signature and `META-INF/` checksums — should be byte-for-byte identical to the APK distributed on Google Play.
+
+    To confirm the checksum of the APK installed on your device, open the app and navigate to **Settings → About**, then tap the version number. The installed APK checksum is displayed.
+  </Step>
+</Steps>
+
+<Note>
+  You can also run the build without FUSE using Docker or Podman, though this may produce slightly different output due to non-deterministic directory ordering on some filesystems:
+
+  ```bash
+  docker build --file build.Containerfile --output build/ .
+  ```
+
+  ```bash
+  podman build --file build.Containerfile --output build/ .
+  ```
+</Note>

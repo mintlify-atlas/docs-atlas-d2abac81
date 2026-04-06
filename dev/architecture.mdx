@@ -1,0 +1,106 @@
+---
+title: "Architecture"
+description: "High-level overview of the Bitcoin Wallet Android app's components, data flow, and file storage layout."
+---
+
+Bitcoin Wallet is a native Android application built on the [bitcoinj](https://bitcoinj.org) library. It follows a standard Android architecture with a persistent foreground service for blockchain sync, a Room SQLite database for cached data, and LiveData for reactive UI updates.
+
+## Key components
+
+<CardGroup cols={2}>
+  <Card title="WalletApplication" icon="layer-group">
+    The Android `Application` singleton. It initializes the bitcoinj `Context`, loads or creates the wallet file on first access using `WalletProtobufSerializer`, and sets up autosave every 3 seconds via `WalletFiles`. All other components obtain the `Wallet` instance through `WalletApplication.getWalletAsync()`.
+  </Card>
+  <Card title="BlockchainService" icon="server">
+    A foreground Android `LifecycleService` that runs the bitcoinj P2P node. It manages a `PeerGroup` and an `SPVBlockStore`-backed `BlockChain`. The service self-stops after a configurable idle timeout and reschedules itself via `StartBlockchainService`.
+  </Card>
+  <Card title="WalletActivity" icon="mobile">
+    The main entry point for users. Displays the transaction list, current balance, and the receiving address QR code. It binds to `BlockchainService` and observes `WalletApplication.blockchainState` and `peerState` LiveData fields for real-time status updates.
+  </Card>
+  <Card title="SendCoinsActivity / RequestCoinsActivity" icon="arrow-right-arrow-left">
+    The two payment-flow activities. `SendCoinsActivity` handles manual entry, QR scan, NFC tap, and BIP-21 URI deep-links. `RequestCoinsActivity` generates a BIP-21 URI and QR code for the current receiving address.
+  </Card>
+  <Card title="ExchangeRatesRepository" icon="chart-line">
+    A singleton repository that fetches fiat exchange rates from CoinGecko every 10 minutes and stores them in a Room SQLite database (`ExchangeRatesDatabase`). UI components observe the `ExchangeRateDao` directly via LiveData.
+  </Card>
+  <Card title="AddressBookDatabase" icon="address-book">
+    A Room SQLite database (`AddressBookDatabase`) with a single `AddressBookDao`. It maps Bitcoin addresses to human-readable labels and is queried by `BlockchainService` to label incoming-payment notifications.
+  </Card>
+</CardGroup>
+
+## Service lifecycle and auto-stop
+
+`BlockchainService` is designed to stop itself once it is no longer needed, to preserve battery life. The stop delays are defined in `Constants`:
+
+| Trigger | Mainnet | Testnet |
+|---|---|---|
+| After service start (idle) | 1 minute | 2 minutes |
+| After a transaction is seen | 5 minutes | 5 minutes |
+| After a peer event (connect/block) | 30 seconds | 2 minutes |
+
+The service also stops immediately when the device reports low memory (`onTrimMemory`) or when Android calls `onTimeout`.
+
+## Wallet file storage
+
+The wallet is stored in app-private storage and is **not** accessible to other apps on non-rooted devices.
+
+```
+# Mainnet wallet
+/data/data/de.schildbach.wallet/files/wallet-protobuf
+
+# Testnet wallet
+/data/data/de.schildbach.wallet_test/files/wallet-protobuf-testnet
+```
+
+The format is a custom protobuf schema (via bitcoinj's `WalletProtobufSerializer`). It is **not** compatible with Bitcoin Core's `wallet.dat`.
+
+### Automatic backups
+
+Certain actions (e.g., restoring a wallet) trigger a rolling automatic backup:
+
+```
+# Mainnet backup
+/data/data/de.schildbach.wallet/files/key-backup-protobuf
+
+# Testnet backup
+/data/data/de.schildbach.wallet_test/files/key-backup-protobuf-testnet
+```
+
+Manual backups can be exported to any storage location supported by the Android Storage Access Framework (e.g., Google Drive) with the filename pattern `bitcoin-wallet-backup-<yyyy-MM-dd-HH-mm>`.
+
+## Fee data
+
+The current fee rates (economic, normal, and priority) are cached locally:
+
+```
+# Mainnet fees
+/data/data/de.schildbach.wallet/files/fees.txt
+
+# Testnet fees
+/data/data/de.schildbach.wallet_test/files/fees-testnet.txt
+```
+
+Dynamic fees are fetched from `https://wallet.schildbach.de/fees`. If that request fails, the app falls back to the bundled static `fees.txt` asset shipped inside the APK.
+
+## Data flow overview
+
+```
+WalletApplication
+    └─ loads Wallet (protobuf) ──────────────────────────────┐
+                                                             │
+BlockchainService (foreground service)                       │
+    ├─ PeerGroup (bitcoinj P2P)                              │
+    ├─ BlockChain + SPVBlockStore                            │
+    └─ observes Wallet ◄─────────────────────────────────────┘
+         │ broadcasts via LiveData
+         ▼
+WalletActivity / Fragments
+    ├─ observes blockchainState (LiveData<BlockchainState>)
+    ├─ observes peerState (LiveData<Integer>)
+    └─ observes walletChanged (LiveData<Event<Void>>)
+
+ExchangeRatesRepository
+    ├─ fetches CoinGecko API (OkHttp)
+    └─ stores in ExchangeRatesDatabase (Room)
+         └─ observed by UI via ExchangeRateDao LiveData
+```

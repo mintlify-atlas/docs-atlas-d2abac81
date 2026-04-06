@@ -1,0 +1,61 @@
+---
+title: "Prerequisites"
+description: "Everything you need to install and configure before building Bitcoin Wallet for Android."
+---
+
+## Software requirements
+
+| Tool | Version |
+|---|---|
+| git | Any recent version |
+| Java SDK | OpenJDK 11 |
+| Gradle | 4.4–6.9.x |
+| Android SDK | With command-line tools |
+
+Ubuntu 24.04 LTS (Noble Numbat) ships with OpenJDK 11 and Gradle 4.4.1, which satisfy all requirements out of the box.
+
+## Set up your environment
+
+<Steps>
+  <Step title="Install system packages">
+    On Ubuntu 24.04 LTS, install git, Gradle, and the Java 11 SDK with a single command:
+
+    <CodeGroup>
+      ```bash Ubuntu 24.04 LTS
+      sudo apt install git gradle openjdk-11-jdk
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Set up the Android SDK">
+    Create a directory to hold the Android SDK and point `ANDROID_HOME` to it:
+
+    ```bash
+    mkdir ~/android-sdk
+    export ANDROID_HOME=~/android-sdk
+    ```
+
+    Download the Android SDK command-line tools from [developer.android.com](https://developer.android.com/studio/index.html#command-tools) and unpack the archive into `$ANDROID_HOME`:
+
+    ```bash
+    unzip commandlinetools-linux-*.zip -d "$ANDROID_HOME"
+    ```
+
+    <Note>
+      Add the `export ANDROID_HOME` line to your shell profile (e.g. `~/.bashrc` or `~/.zshrc`) so the variable persists across sessions.
+    </Note>
+  </Step>
+
+  <Step title="Clone the repository">
+    Clone the Bitcoin Wallet repository and enter the project directory:
+
+    ```bash
+    git clone -b main https://github.com/bitcoin-wallet/bitcoin-wallet.git bitcoin-wallet
+    cd bitcoin-wallet
+    ```
+  </Step>
+</Steps>
+
+## IDE setup
+
+The project uses Gradle, so you can import it into **IntelliJ IDEA** or **Android Studio** directly — no additional configuration is required. Use **File → Open** and select the `bitcoin-wallet` directory.

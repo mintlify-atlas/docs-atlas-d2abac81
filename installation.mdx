@@ -1,0 +1,73 @@
+---
+title: "Installation"
+description: "Install Bitcoin Wallet on your Android device from Google Play or F-Droid, or build it yourself from source."
+---
+
+## Requirements
+
+Bitcoin Wallet requires **Android 8.0 (Oreo), API level 26** or higher.
+
+## Install from an app store
+
+<Steps>
+  <Step title="Choose your build flavor">
+    Bitcoin Wallet ships in two flavors:
+
+    | Flavor | Network | Package name | Where to get it |
+    |---|---|---|---|
+    | `prod` (Mainnet) | Bitcoin mainnet | `de.schildbach.wallet` | Google Play |
+    | `dev` (Testnet) | Bitcoin Testnet | `de.schildbach.wallet_test` | F-Droid |
+
+    Use the **prod** build for real bitcoin. Use the **dev** build to experiment on Testnet without risking real funds.
+  </Step>
+  <Step title="Install the mainnet build (prod)">
+    Open the [Bitcoin Wallet listing on Google Play](https://play.google.com/store/apps/details?id=de.schildbach.wallet) and tap **Install**.
+
+    The package ID is `de.schildbach.wallet`.
+  </Step>
+  <Step title="Install the testnet build (dev) — optional">
+    The testnet build is distributed via F-Droid. Search for `de.schildbach.wallet_test` or install it directly from the F-Droid repository.
+
+    <Note>
+      The testnet app icon is grey so you can easily tell it apart from the mainnet app. Never send real bitcoin to a Testnet address.
+    </Note>
+  </Step>
+  <Step title="Launch the app">
+    Open Bitcoin Wallet. On first launch the app creates a new HD wallet automatically — no account or sign-up needed.
+  </Step>
+</Steps>
+
+## Build from source
+
+If you prefer to audit and compile the code yourself, follow the Developer Guide. At a high level you will need:
+
+- Git
+- Java 11 SDK
+- Gradle 4.4 – 6.9.x
+- Android SDK (API level 26+)
+
+Clone the repository and build the development (Testnet) APK:
+
+```bash
+git clone -b main https://github.com/bitcoin-wallet/bitcoin-wallet.git bitcoin-wallet
+cd bitcoin-wallet
+gradle clean test :wallet:assembleDevDebug
+```
+
+The signed debug APK is written to:
+
+```
+wallet/build/outputs/apk/dev/debug/bitcoin-wallet-dev-debug.apk
+```
+
+To build the production (mainnet) release APK:
+
+```bash
+gradle clean test :wallet:assembleProdRelease
+```
+
+<Warning>
+  The production build uses real mainnet funds. Review the source code carefully before running it on a device that holds bitcoin.
+</Warning>
+
+For full prerequisites and reproducible-build instructions, see the Developer Guide.

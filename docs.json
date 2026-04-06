@@ -1,122 +1,97 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Bitcoin Wallet",
+  "theme": "almond",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#48a84e",
+    "light": "#1c8620",
+    "dark": "#0a0d0b"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://media.brand.dev/061bd945-ba18-4732-9bd8-ef56c9769fe7.svg",
+  "logo": {
+    "light": "https://media.brand.dev/bbc2f9fc-08fd-438f-b55b-3c1093c9d0b8.png",
+    "dark": "https://media.brand.dev/bbc2f9fc-08fd-438f-b55b-3c1093c9d0b8.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/bitcoin-wallet/bitcoin-wallet"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/bitcoin-wallet/bitcoin-wallet"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "User Guide",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "installation",
+              "first-steps"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Using the Wallet",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "sending-bitcoin",
+              "receiving-bitcoin",
+              "address-book",
+              "exchange-rates"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Security & Backup",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "backup-restore",
+              "spending-pin",
+              "paper-wallet-sweep"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Advanced Features",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "nfc-payments",
+              "bluetooth-payments",
+              "network-monitor",
+              "settings"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Developer Guide",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Building",
             "pages": [
-              "api-reference/introduction"
+              "dev/prerequisites",
+              "dev/building",
+              "dev/reproducible-build"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Architecture",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "dev/architecture",
+              "dev/bitcoinj-integration",
+              "dev/supported-bips"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "dev/translations",
+              "dev/troubleshooting"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

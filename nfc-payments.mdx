@@ -1,0 +1,63 @@
+---
+title: "NFC payments"
+description: "Use NFC to read Bitcoin payment requests from passive tags or other Android devices, and populate the Send dialog automatically."
+---
+
+Bitcoin Wallet can read Bitcoin payment requests via NFC — either from a passive NFC tag or from another NFC-capable Android device that has the **Request coins** dialog open. When your phone reads a valid request, the **Send coins** dialog opens with the address and amount already filled in.
+
+## Send coins via NFC
+
+<Steps>
+  <Step title="Open the Send dialog">
+    Tap the send button on the main wallet screen to open the **Send coins** dialog.
+  </Step>
+  <Step title="Hold your device near the NFC source">
+    Hold your phone close to the NFC tag or to the other Android device showing the **Request coins** dialog. Keep NFC enabled in your phone's settings.
+  </Step>
+  <Step title="Confirm the populated fields">
+    The **Send coins** dialog fills in the Bitcoin address and, if present, the requested amount. Review the details and confirm the transaction.
+  </Step>
+</Steps>
+
+<Note>
+  NFC must be enabled on your device. Go to **Settings → Connected devices → NFC** (exact path varies by manufacturer) to turn it on.
+</Note>
+
+## Set up an NFC tag
+
+You can write your Bitcoin address to a passive NFC tag so others can tap to pay you.
+
+<Steps>
+  <Step title="Get a compatible NFC tag">
+    Use a tag with at least 50 bytes of capacity. 1 KB tags are recommended to ensure there is enough space for a full Bitcoin URI.
+  </Step>
+  <Step title="Construct your Bitcoin URI">
+    Build a BIP-21 URI with the **Request coins** dialog, then share it to get the raw text. You can also construct one manually:
+
+    ```text
+    bitcoin:bc1q66u53meh4n3a9crmx7fhgphhw975llz00m8jda
+    ```
+
+    You can append an amount or label as query parameters:
+
+    ```text
+    bitcoin:bc1q66u53meh4n3a9crmx7fhgphhw975llz00m8jda?amount=0.001&label=Donation
+    ```
+  </Step>
+  <Step title="Write the URI to the tag">
+    Use an NFC tag writer app to write the URI to the tag. Set the record type to **URI** or **URL** — do not use the **Text** type, as Bitcoin Wallet will not recognise it.
+
+    The NXP NFC TagWriter app has been tested and confirmed to work. Other writers should also work.
+  </Step>
+  <Step title="Enable write protect (public tags)">
+    If you place the tag in a public location, enable write protection in your tag writer app. This prevents someone else from overwriting your address with their own.
+  </Step>
+</Steps>
+
+<Warning>
+  Tags smaller than 50 bytes cannot hold a Bitcoin URI and will not work. Always use a tag of at least 50 bytes capacity, with 1 KB recommended.
+</Warning>
+
+<Warning>
+  Always enable write protection on any NFC tag placed in a public or shared location. Without it, anyone with an NFC writer could replace your address with theirs.
+</Warning>

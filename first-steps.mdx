@@ -1,0 +1,57 @@
+---
+title: "First steps"
+description: "Get up and running with Bitcoin Wallet: understand the main screen, back up your wallet, and set a spending PIN."
+---
+
+## What happens on first launch
+
+When you open Bitcoin Wallet for the first time, the app automatically creates a new BIP-32 hierarchical deterministic (HD) wallet. There is nothing to configure — your wallet and your first receive address are ready immediately.
+
+<Note>
+  Your wallet is stored in app-private storage on your device. No seed phrase is shown during setup, so backing up the wallet file promptly (see below) is essential.
+</Note>
+
+## The main screen
+
+The main screen gives you a quick overview of your wallet:
+
+- **Balance** — your current bitcoin balance. Tap it to cycle through denominations: BTC, mBTC, µBTC, and sat (satoshi).
+- **QR code** — a scannable QR code of your current receive address. Share it with anyone who wants to send you bitcoin.
+- **Transaction list** — your recent incoming and outgoing payments, each with a confirmation indicator that blends from red (1 confirmation) to green (7 confirmations).
+
+<Tip>
+  Your receive address rotates automatically after funds arrive on it. This improves your privacy by making it harder to link your transactions on the public blockchain.
+</Tip>
+
+## Setting up your wallet
+
+<Steps>
+  <Step title="Back up your wallet immediately">
+    Go to **Options → Safety → Back up wallet**. Choose a strong password and save the encrypted backup file to a location you control — the Android Storage Access Framework lets you save to Google Drive, another cloud provider, or local storage.
+
+    <Warning>
+      If you lose your device and have no backup, your bitcoin cannot be recovered. Back up before you receive any funds.
+    </Warning>
+  </Step>
+  <Step title="Set a spending PIN (recommended)">
+    Go to **Options → Safety → Set spending PIN**. The PIN encrypts your private keys on-device using scrypt, so even if someone accesses your device they cannot send funds without it.
+
+    <Note>
+      You can change or remove the spending PIN at any time from the same menu. Changing the PIN on an existing wallet automatically upgrades it to use native SegWit (Bech32) addresses if it has not been upgraded already.
+    </Note>
+  </Step>
+  <Step title="Receive your first bitcoin">
+    Share your QR code or copy your address from the main screen. Once a payment arrives, you will see it appear in the transaction list and receive a notification.
+  </Step>
+  <Step title="Send bitcoin">
+    Tap the **Send** button and scan the recipient's QR code, paste their address, or tap an NFC-enabled device. Review the amount and fee, then confirm to broadcast the transaction to the Bitcoin network.
+  </Step>
+</Steps>
+
+## Automatic address rotation
+
+Bitcoin Wallet derives all addresses from your single HD seed (BIP-32). The app tries not to reuse addresses: the QR code on the main screen advances to a fresh address as soon as coins are received on the current one. Old addresses remain valid and funds sent to them are still received correctly.
+
+## Reporting an issue
+
+If you run into a problem, go to **Options → Settings → Report issue**. The app generates a pre-filled email with diagnostic logs attached. Replace the default support address with your own if you are building from source.

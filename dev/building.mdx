@@ -1,0 +1,85 @@
+---
+title: "Building"
+description: "How to build Bitcoin Wallet for Android in development and production flavors."
+---
+
+The project has two build flavors:
+
+| Flavor | Network | Debuggable | Wallet access | ProGuard |
+|---|---|---|---|---|
+| `dev` | Testnet | Yes | World-readable | No |
+| `prod` | Mainnet | No | Protected | Yes |
+
+Before building, make sure you have completed all steps in [Prerequisites](/dev/prerequisites).
+
+## Development build
+
+<Steps>
+  <Step title="Build the dev APK">
+    Run the following command from the root of the repository:
+
+    <CodeGroup>
+      ```bash Gradle
+      gradle clean test :wallet:assembleDevDebug
+      ```
+    </CodeGroup>
+
+    The signed APK is written to:
+
+    ```
+    wallet/build/outputs/apk/dev/debug/bitcoin-wallet-dev-debug.apk
+    ```
+  </Step>
+
+  <Step title="Install to a device">
+    To build and install directly onto a connected Android device:
+
+    <CodeGroup>
+      ```bash Gradle
+      gradle :wallet:installDevDebug
+      ```
+    </CodeGroup>
+
+    <Note>
+      You must enable **Developer options** and **USB debugging** on your Android device, and have an active ADB connection before running this command.
+    </Note>
+  </Step>
+</Steps>
+
+## Production build
+
+<Warning>
+  You proceed at your own risk. The license provides no warranty or liability. It is your responsibility to audit the source code for security issues and to build, install, and run the application in a secure environment.
+</Warning>
+
+<Steps>
+  <Step title="Build the prod APK">
+    Run the following command from the root of the repository:
+
+    <CodeGroup>
+      ```bash Gradle
+      gradle clean test :wallet:assembleProdRelease
+      ```
+    </CodeGroup>
+
+    The unsigned APK is written to:
+
+    ```
+    wallet/build/outputs/apk/prod/release/bitcoin-wallet-prod-release-unsigned.apk
+    ```
+
+    <Note>
+      The production APK is unsigned. It is built from the same source as the Google Play release, but does not include the signing key. Apart from the missing signature and `META-INF/` checksums, it should be identical to the store release.
+    </Note>
+  </Step>
+</Steps>
+
+## Build all sub-projects
+
+To build every sub-project in all flavors at once, run:
+
+<CodeGroup>
+  ```bash Gradle
+  gradle clean build
+  ```
+</CodeGroup>

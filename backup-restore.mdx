@@ -1,0 +1,118 @@
+---
+title: "Backup & restore"
+description: "Keep your bitcoin safe by backing up your wallet and knowing how to restore it."
+---
+
+Your wallet file contains your private keys and transaction metadata. If you lose your device without a backup, your funds are unrecoverable. Back up immediately after setting up the app.
+
+<Warning>
+  There is no account recovery. Bitcoin Wallet does not store your keys on any server. Only your backup file — and the password you protect it with — can recover your funds.
+</Warning>
+
+## Creating a backup
+
+<Steps>
+  <Step title="Open the backup dialog">
+    Go to **Options → Safety → Back up wallet**.
+  </Step>
+  <Step title="Set a backup password">
+    Enter a strong password. You will need this exact password to restore — there is no way to reset it. Write it down and store it securely, separate from the backup file.
+  </Step>
+  <Step title="Choose a destination">
+    The Storage Access Framework dialog opens. Select Google Drive or any other storage provider installed on your device. The app saves an encrypted backup file.
+  </Step>
+  <Step title="Verify the backup">
+    The app automatically verifies the backup after saving. You will see a confirmation when it succeeds.
+  </Step>
+</Steps>
+
+### Backup file naming
+
+| Network | Filename pattern |
+|---------|-----------------|
+| Mainnet | `bitcoin-wallet-backup-<yyyy-MM-dd-HH-mm>` |
+| Testnet | `bitcoin-wallet-backup-testnet-<yyyy-MM-dd-HH-mm>` |
+
+### Automatic rolling backups
+
+The app also writes automatic backups to app-private storage whenever important wallet events occur:
+
+| Network | Path |
+|---------|------|
+| Mainnet | `/data/data/de.schildbach.wallet/files/key-backup-protobuf` |
+| Testnet | `/data/data/de.schildbach.wallet_test/files/key-backup-protobuf-testnet` |
+
+These are not accessible without root, but serve as a safety net for the manual restore flow.
+
+## Restoring a backup
+
+<Steps>
+  <Step title="Open the restore dialog">
+    Go to **Options → Safety → Restore wallet**.
+  </Step>
+  <Step title="Select your backup file">
+    Browse to your backup file in Google Drive or wherever you saved it.
+  </Step>
+  <Step title="Enter your backup password">
+    Type the password you set when creating the backup.
+  </Step>
+  <Step title="Wait for blockchain sync">
+    After restoring, the app resyncs the blockchain to recalculate your balance. This may take several minutes.
+  </Step>
+</Steps>
+
+<Tip>
+  Restore from within the app whenever possible — it is faster and simpler than the PC recovery method.
+</Tip>
+
+## Emergency PC recovery
+
+If you cannot use the Android app (device is lost or destroyed), you can recover your coins on a Linux PC using the bitcoinj `wallet-tool`.
+
+<Warning>
+  This process exposes your private keys in unencrypted form. Run it on a trusted, malware-free machine. Treat any decrypted private keys as compromised afterward.
+</Warning>
+
+<Steps>
+  <Step title="Install dependencies">
+    ```bash
+    sudo apt install openjdk-11-jdk openssl git gradle
+    ```
+  </Step>
+  <Step title="Locate your backup file">
+    Find the file named `bitcoin-wallet-backup-...` in your Google Drive, email, or SD card. Copy it to your PC.
+  </Step>
+  <Step title="Decrypt the backup">
+    ```bash
+    openssl enc -d -aes-256-cbc -md md5 -a \
+      -in bitcoin-wallet-backup-2024-01-01-12-00 \
+      > bitcoin-wallet-decrypted-backup
+    ```
+    Enter your backup password when prompted. If you see "bad password", the password is wrong.
+  </Step>
+  <Step title="Verify the format">
+    ```bash
+    cat bitcoin-wallet-decrypted-backup | tr -cd "[:print:]" | awk '{print $1}'
+    ```
+    Output `org.bitcoin.production` means a protobuf wallet (current format). Output `#` means the older Base58 key format.
+  </Step>
+  <Step title="Clone bitcoinj and build wallet-tool">
+    ```bash
+    git clone -b release-0.16 https://github.com/bitcoinj/bitcoinj.git
+    cd bitcoinj
+    gradle clean bitcoinj-tools:installDist
+    ```
+  </Step>
+  <Step title="Sync and send funds">
+    ```bash
+    tools/build/install/wallet-tool/bin/wallet-tool reset \
+      --wallet=/tmp/bitcoin-wallet-decrypted-backup
+    tools/build/install/wallet-tool/bin/wallet-tool sync \
+      --wallet=/tmp/bitcoin-wallet-decrypted-backup --debuglog
+    tools/build/install/wallet-tool/bin/wallet-tool send \
+      --wallet=/tmp/bitcoin-wallet-decrypted-backup \
+      --output=<destination-address>:ALL
+    ```
+    If your wallet was protected by a spending PIN, add `--password=<PIN>`.
+  </Step>
+</Steps>

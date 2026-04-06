@@ -1,0 +1,53 @@
+---
+title: "Exchange rates"
+description: "How Bitcoin Wallet fetches and displays live Bitcoin exchange rates for your local currency."
+---
+
+Bitcoin Wallet shows the current Bitcoin price in your local fiat currency throughout the app — on the main balance screen, in the send and request dialogs, and alongside each transaction in the transaction list.
+
+## Data source
+
+Exchange rate data is fetched from the CoinGecko public API:
+
+```text
+https://api.coingecko.com/api/v3/exchange_rates
+```
+
+CoinGecko aggregates data across multiple exchanges, so the rate you see is not tied to a single market. Rates for all supported fiat currencies are returned in one response, and the app picks the one matching your device's locale or your manually selected currency.
+
+<Note>
+  This feature can be disabled at compile time by setting `Constants.ENABLE_EXCHANGE_RATES` to `false` in the source code. Builds distributed through app stores have this feature enabled.
+</Note>
+
+## Automatic updates
+
+Rates refresh automatically while the app is open and connected to the internet. You do not need to pull to refresh or navigate to a separate screen — the displayed amounts update in the background whenever a fresh rate is available.
+
+## Browse and filter rates
+
+Open **Exchange rates** from the main menu to see the full list of supported currencies and their current rates against Bitcoin. Use the search field at the top of the screen to filter the list by currency name or code.
+
+<Tip>
+  Tap any currency in the list to make it your active display currency. The selection takes effect immediately across the whole app.
+</Tip>
+
+## Denomination options
+
+You can control how Bitcoin amounts are displayed by changing the denomination in **Settings**. The available options are:
+
+| Denomination | Symbol | Unit |
+|---|---|---|
+| Bitcoin | BTC | 1 BTC = 100,000,000 sat |
+| Millibitcoin | mBTC | 1 mBTC = 100,000 sat |
+| Microbitcoin | µBTC | 1 µBTC = 100 sat |
+| Satoshi | sat | Smallest indivisible unit |
+
+The denomination you select applies to all amount fields — the main balance, the send dialog, the request dialog, and the transaction list.
+
+## Historical fiat amounts
+
+The fiat equivalent shown next to each transaction in the list reflects the exchange rate **at the time the transaction was first seen**, not the current rate. This gives you an accurate record of what a payment was worth when it occurred.
+
+<Note>
+  If no exchange rate was available when the transaction was received (for example, because the device was offline), no fiat amount is recorded and the field will remain blank for that transaction.
+</Note>

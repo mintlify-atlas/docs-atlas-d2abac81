@@ -1,0 +1,50 @@
+---
+title: "Bluetooth payments"
+description: "Receive Bitcoin payments over Bluetooth without an internet connection on either device, using the BIP-70 payment protocol."
+---
+
+Bitcoin Wallet supports receiving payments via Bluetooth. Neither the merchant's device nor the customer's device needs an active internet connection during the transfer. The wallet uses the BIP-70 payment protocol to exchange signed payment messages directly over the Bluetooth link.
+
+<Note>
+  Even though the payment is sent over Bluetooth, the transaction is still broadcast to the Bitcoin network eventually — once either device comes back online.
+</Note>
+
+## Merchant setup
+
+<Steps>
+  <Step title="Open Settings">
+    In the wallet, tap **Options → Settings**.
+  </Step>
+  <Step title="Set your Bluetooth address">
+    Tap **Own Bluetooth address** and follow the prompt. The wallet reads your device's Bluetooth MAC address and stores it so it can be shared in payment requests.
+  </Step>
+  <Step title="Open the Request coins dialog">
+    On the main screen, tap the receive button to open **Request coins**. When a Bluetooth address is configured, the request will include the Bluetooth address so customers can pay without internet.
+  </Step>
+</Steps>
+
+<Tip>
+  Keep Bluetooth enabled on your device while accepting payments. The wallet's Bluetooth listener service runs in the background and shows a persistent notification while it is active. The service stops automatically after 5 minutes of inactivity.
+</Tip>
+
+## Customer payment flow
+
+<Steps>
+  <Step title="Scan or receive a payment request">
+    Scan the merchant's QR code or receive a payment URI that includes the merchant's Bluetooth address.
+  </Step>
+  <Step title="Open the Send dialog">
+    The **Send coins** dialog populates with the merchant's address and, if specified, the requested amount. A Bluetooth option is shown when the payment request contains a Bluetooth address.
+  </Step>
+  <Step title="Confirm and send">
+    Tap **Send**. The wallet connects to the merchant's device over Bluetooth and delivers the signed transaction using the BIP-70 payment protocol. The merchant's device acknowledges receipt with a payment ACK.
+  </Step>
+</Steps>
+
+## Android 12+ permissions
+
+On Android 12 and later, Bluetooth access requires explicit runtime permissions. Bitcoin Wallet requests the necessary **Bluetooth connect** and **listen socket** permissions automatically when you first configure your Bluetooth address or initiate a Bluetooth payment. Grant the permissions when prompted.
+
+<Note>
+  If you deny the Bluetooth permissions, the Bluetooth payment option will be unavailable. You can grant the permissions later in **Settings → Apps → Bitcoin Wallet → Permissions**.
+</Note>

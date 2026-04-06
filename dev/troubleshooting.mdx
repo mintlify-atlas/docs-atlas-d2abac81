@@ -1,0 +1,92 @@
+---
+title: "Troubleshooting"
+description: "Debugging tools, ADB commands, and solutions to common issues with Bitcoin Wallet."
+---
+
+## Debugging tools
+
+### Pull the testnet wallet file
+
+You can copy the testnet wallet directly from a device — even an un-rooted one — using ADB:
+
+```bash
+adb pull /data/data/de.schildbach.wallet_test/files/wallet-protobuf-testnet
+```
+
+### View log output
+
+Stream the app's log output to your terminal:
+
+```bash
+adb logcat
+```
+
+### In-app issue reporting
+
+Bitcoin Wallet can generate a detailed debug report and attach it to an email:
+
+**Options → Settings → Report Issue**
+
+Follow the dialog, then replace the pre-filled support address with your own if you are debugging locally.
+
+---
+
+## Common issues
+
+<AccordionGroup>
+  <Accordion title="Installation fails">
+    If `gradle :wallet:installDevDebug` fails or you cannot sideload the APK, check the following:
+
+    1. Open **Settings → About phone** and tap **Build number** seven times to enable Developer options.
+    2. In **Settings → Developer options**, turn on **USB debugging**.
+    3. Reconnect the USB cable and confirm the ADB authorisation dialog on the device.
+    4. Verify ADB can see your device:
+
+    ```bash
+    adb devices
+    ```
+
+    The device should appear with status `device` (not `unauthorized`).
+  </Accordion>
+
+  <Accordion title="Wallet not syncing in the background">
+    Modern Android versions aggressively restrict background services to save battery. If the blockchain stops syncing when the app is not in the foreground:
+
+    1. Go to **Settings → Apps → Bitcoin Wallet → Battery**.
+    2. Select **Unrestricted** (or disable battery optimization for the app).
+
+    On some manufacturer skins (MIUI, One UI, etc.) you may also need to allow the app to autostart or lock it in the recent-apps tray.
+
+    <Note>
+      `BlockchainService` is a foreground service with a persistent notification while it is running. If you do not see the notification, the service has been stopped by the OS.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Transaction stuck / unconfirmed for a long time">
+    If a transaction has been unconfirmed for an extended period, you can use Child-Pays-for-Parent (CPFP) to bump its effective fee rate:
+
+    1. Open the transaction in the transaction list.
+    2. Tap **Raise fee** in the transaction details screen.
+
+    This creates a new transaction that spends the unconfirmed output with a high enough fee to incentivise miners to confirm both transactions together.
+  </Accordion>
+
+  <Accordion title="Transaction shown as risky (RBF flag)">
+    Unconfirmed transactions that carry the Replace-By-Fee (RBF) signal are displayed with a warning indicator in the transaction list. This is normal behaviour — the sender has signalled that the transaction may be replaced with a higher-fee version before it confirms.
+
+    Wait for the transaction to receive its first confirmation. Once confirmed, the warning is removed and the transaction is fully settled.
+  </Accordion>
+
+  <Accordion title="App shows a deprecated SDK warning">
+    Bitcoin Wallet runs on Android 8.0 (Oreo, API 26) and higher. However, the app shows an in-app warning dialog on devices running below Android 9.0 (Pie, API 28), because those versions no longer receive security patches.
+
+    The deprecation threshold is defined in the source as:
+
+    ```java
+    // Constants.java
+    public static final int SDK_DEPRECATED_BELOW = Build.VERSION_CODES.P; // API 28
+    ```
+
+    The warning is informational only — the app still functions on Android 8.0 and 8.1. To remove the warning, upgrade your device to Android 9.0 or later.
+  </Accordion>
+</AccordionGroup>

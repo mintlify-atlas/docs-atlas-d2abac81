@@ -1,0 +1,45 @@
+---
+title: "Address book"
+description: "Store Bitcoin addresses with human-readable labels for quick access when sending and receiving."
+---
+
+The address book lets you attach a label to any Bitcoin address so you don't need to copy and paste long strings every time you make a payment. The book is stored locally on your device in a SQLite database managed by the Room Persistence Library — nothing leaves the device.
+
+## Two sections
+
+<CardGroup cols={2}>
+  <Card title="Your addresses" icon="wallet">
+    Addresses derived from your own wallet's keys. These are your receive addresses. You can view them here to share with others, but you cannot edit or delete them — they are controlled by the wallet's key hierarchy.
+  </Card>
+  <Card title="Contacts" icon="address-book">
+    External addresses you have sent to or added manually. You can add, rename, and delete entries in this section. Labels you assign here appear as autocomplete suggestions in the send dialog.
+  </Card>
+</CardGroup>
+
+## Add a contact
+
+<Steps>
+  <Step title="Send to the address">
+    The simplest way to add a contact is to send Bitcoin to an address. After the transaction is broadcast, you can open the address from the transaction detail and save it to the address book with a label.
+  </Step>
+  <Step title="Scan a QR code">
+    Open the address book, tap the scan icon in the toolbar, and point the camera at the contact's Bitcoin QR code. If the address is not your own, the app prompts you to enter a label and saves the entry to **Contacts**.
+  </Step>
+</Steps>
+
+<Note>
+  Pasting an address directly from the clipboard to add a contact was removed for security reasons. Malware can silently replace clipboard contents with an attacker-controlled address. Use the QR scanner whenever possible.
+</Note>
+
+## Edit or delete an entry
+
+Tap any entry in the **Contacts** section to open the edit dialog. You can:
+
+- Change the label.
+- Delete the entry entirely.
+
+Entries in **Your addresses** are read-only and cannot be edited or removed from this screen.
+
+## How labels appear when sending
+
+When you type in the recipient address field on the send screen, the app queries your address book and shows matching contacts as autocomplete suggestions. Selecting a suggestion fills in the address and displays its label as confirmation.

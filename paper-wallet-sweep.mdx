@@ -1,0 +1,50 @@
+---
+title: "Sweeping a paper wallet"
+description: "Import all funds from a paper wallet or cold storage private key into your Bitcoin Wallet."
+---
+
+Sweeping moves all funds from a private key (paper wallet or cold storage) into your HD wallet. Unlike importing, the original private key is not kept — funds are transferred to a fresh address in your wallet.
+
+<Warning>
+  Never photograph your private key or type it near untrusted software or cameras. Anyone who sees your private key can steal the funds on it.
+</Warning>
+
+## How to sweep
+
+<Steps>
+  <Step title="Open the sweep dialog">
+    Go to **Options → Sweep paper wallet**.
+  </Step>
+  <Step title="Scan the private key QR code">
+    Point your camera at the QR code on your paper wallet. The app accepts private keys in WIF (Wallet Import Format) or BIP-38 encrypted format.
+  </Step>
+  <Step title="Enter the BIP-38 password (if applicable)">
+    If your paper wallet is password-protected (BIP-38), the app prompts you for the decryption password.
+  </Step>
+  <Step title="Confirm and sweep">
+    The app queries Electrum servers to find unspent outputs (UTXOs) on that key, then broadcasts a transaction sending all funds to your wallet.
+  </Step>
+</Steps>
+
+## Supported key formats
+
+| Format | Description |
+|--------|-------------|
+| WIF (unencrypted) | Standard Wallet Import Format — starts with `5`, `K`, or `L` on mainnet |
+| BIP-38 (encrypted) | Password-protected paper wallet — starts with `6P` |
+
+## How funds are located
+
+Bitcoin Wallet queries a set of Electrum servers to find UTXOs associated with the private key. This requires an internet connection at sweep time.
+
+<Note>
+  This feature can be disabled at compile time by setting `Constants.ENABLE_SWEEP_WALLET = false`.
+</Note>
+
+## After sweeping
+
+Once the sweep transaction is confirmed, the original private key has no remaining funds. You can safely destroy the paper wallet. Your funds are now in your HD wallet and protected by all its security features, including your spending PIN and encrypted backups.
+
+<Tip>
+  After a successful sweep, immediately back up your wallet to capture the new transaction history. See [Backup & restore](/backup-restore).
+</Tip>

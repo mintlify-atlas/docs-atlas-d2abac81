@@ -1,0 +1,45 @@
+---
+title: "Network monitor"
+description: "Inspect your wallet's live connection to the Bitcoin P2P network, view connected peers, and browse recently seen blocks."
+---
+
+The network monitor gives you a real-time view of your wallet's connection to the Bitcoin peer-to-peer network. Use it to check which nodes you are connected to and to verify that new blocks are arriving.
+
+**To open the network monitor:** tap **Options → Network monitor**.
+
+The monitor has two tabs.
+
+<CardGroup cols={2}>
+  <Card title="Peer list" icon="network-wired">
+    Shows every peer your wallet is currently connected to. For each peer you can see:
+
+    - **IP address** (with hostname if resolved)
+    - **Client version** string
+    - **Block height** reported by that peer
+  </Card>
+  <Card title="Block list" icon="cubes">
+    Shows the most recently seen blocks on the chain. For each block you can see:
+
+    - **Height** (block number)
+    - **Hash** (truncated)
+    - **Time** the block was mined
+    - **Number of transactions** in the block
+
+    Long-press a block to open it in a block explorer.
+  </Card>
+</CardGroup>
+
+## Trusted peer
+
+You can configure the wallet to connect exclusively to a Bitcoin node you trust instead of discovering peers automatically.
+
+Go to **Settings → Trusted peer** and enter the hostname or IP address of your node. Supported formats:
+
+- IPv4 with optional port: `192.0.2.1` or `192.0.2.1:8333`
+- IPv6 with optional port: `[2001:db8::1]` or `[2001:db8::1]:8333`
+- Hostname: `node.example.com` or `node.example.com:8333`
+- Multiple peers separated by spaces: `node1.example.com node2.example.com`
+
+<Note>
+  When a trusted peer is configured, the connectivity notification in the status bar shows sync progress toward that specific peer rather than the general network. If the trusted peer is unreachable, the wallet will not fall back to other peers.
+</Note>

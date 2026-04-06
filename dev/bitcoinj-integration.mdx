@@ -1,0 +1,171 @@
+---
+title: "bitcoinj integration"
+description: "How Bitcoin Wallet uses the bitcoinj library for Bitcoin-specific logic, key management, SPV sync, and exchange rates."
+---
+
+Bitcoin Wallet delegates all Bitcoin protocol logic to the [bitcoinj](https://bitcoinj.org) library. This page explains which bitcoinj APIs are used and how they are wired into the Android application.
+
+## Network parameters
+
+The active network is determined at build time by the Gradle flavor:
+
+```java
+// Constants.java
+public static final NetworkParameters NETWORK_PARAMETERS =
+        !BuildConfig.FLAVOR.equals("prod") ? TestNet3Params.get() : MainNetParams.get();
+```
+
+- **`prod` flavor** → `MainNetParams` (mainnet)
+- **`dev` flavor** → `TestNet3Params` (testnet)
+
+All bitcoinj objects that need a `NetworkParameters` instance receive `Constants.NETWORK_PARAMETERS`.
+
+## Wallet and key derivation
+
+The `Wallet` class from bitcoinj is an HD wallet backed by BIP-32 key derivation. A fresh wallet is created as:
+
+```java
+// WalletApplication.java — loadWalletFromProtobuf()
+wallet = Wallet.createDeterministic(
+        Constants.NETWORK_PARAMETERS,
+        Constants.DEFAULT_OUTPUT_SCRIPT_TYPE   // Script.ScriptType.P2WPKH
+);
+```
+
+`Constants.DEFAULT_OUTPUT_SCRIPT_TYPE` is set to `Script.ScriptType.P2WPKH`, so all new wallets use native SegWit Bech32 addresses by default.
+
+### Autosave
+
+The wallet is autosaved to disk every 3 seconds using bitcoinj's built-in `WalletFiles` mechanism:
+
+```java
+// Constants.java
+public static final long WALLET_AUTOSAVE_DELAY_MS = 3 * DateUtils.SECOND_IN_MILLIS;
+
+// WalletApplication.java
+walletFiles = wallet.autosaveToFile(
+        walletFile,
+        Constants.Files.WALLET_AUTOSAVE_DELAY_MS,
+        TimeUnit.MILLISECONDS,
+        null
+);
+```
+
+You can also trigger an immediate save via `WalletApplication.autosaveWalletNow()`.
+
+## Wallet serialization
+
+Wallets are read and written using `WalletProtobufSerializer`:
+
+```java
+// reading
+wallet = new WalletProtobufSerializer().readWallet(walletStream);
+
+// writing is handled automatically by WalletFiles (autosave)
+```
+
+<Warning>
+  The protobuf wallet format is **not** compatible with Bitcoin Core's `wallet.dat`. You cannot import a Bitcoin Wallet backup directly into Bitcoin Core.
+</Warning>
+
+## Wallet upgrade path
+
+Older wallets that were created with P2PKH (classic Base58) addresses are upgraded to P2WPKH (Bech32) when the user changes or removes their spending PIN:
+
+```java
+// Constants.java
+public static final Script.ScriptType UPGRADE_OUTPUT_SCRIPT_TYPE = Script.ScriptType.P2WPKH;
+
+// WalletApplication.java — replaceWallet()
+if (newWallet.isDeterministicUpgradeRequired(Constants.UPGRADE_OUTPUT_SCRIPT_TYPE)
+        && !newWallet.isEncrypted())
+    newWallet.upgradeToDeterministic(Constants.UPGRADE_OUTPUT_SCRIPT_TYPE, null);
+```
+
+## BIP-39 mnemonic seed phrases
+
+bitcoinj's `MnemonicCode` is used to generate and validate BIP-39 seed phrases. The word list is loaded from the bundled asset `bip39-wordlist.txt` on first use:
+
+```java
+// WalletApplication.java — initMnemonicCode()
+MnemonicCode.INSTANCE = new MnemonicCode(
+        getAssets().open("bip39-wordlist.txt"),
+        null
+);
+```
+
+## Blockchain sync (SPV)
+
+`BlockchainService` wraps bitcoinj's `PeerGroup` and `BlockChain` to perform Simplified Payment Verification (SPV) sync:
+
+```java
+// BlockchainService.java — startup()
+peerGroup = new PeerGroup(Constants.NETWORK_PARAMETERS, blockChain);
+peerGroup.addWallet(wallet);
+
+// Bloom filtering (BIP-37) enabled when sync mode is CONNECTION_FILTER
+peerGroup.setBloomFilteringEnabled(
+        syncMode == Configuration.SyncMode.CONNECTION_FILTER
+);
+
+peerGroup.startAsync();
+peerGroup.startBlockChainDownload(blockchainDownloadListener);
+```
+
+The block store is an `SPVBlockStore` with a rolling window of 10,000 blocks (`Constants.Files.BLOCKCHAIN_STORE_CAPACITY`). Checkpoints bundled in `checkpoints.txt` are used to fast-forward the initial sync to the wallet's birthdate.
+
+### Peer connection limits
+
+The number of simultaneous peer connections adapts to the device's available memory:
+
+| Device memory | Max peers |
+|---|---|
+| ≤ 128 MB | 4 |
+| > 128 MB | 6 |
+
+### Bloom filtering and privacy
+
+When the sync mode is set to `CONNECTION_FILTER`, Bloom filtering (BIP-37) is enabled. This reduces bandwidth by letting peers filter blocks before sending them, at some cost to privacy. In the default mode, Bloom filtering is disabled and the app requests full witness-capable peers (`NODE_WITNESS`).
+
+## Exchange rates (CoinGecko)
+
+`CoinGecko.java` fetches the exchange rate feed and parses it into `ExchangeRateEntry` objects stored in a Room database:
+
+```java
+// CoinGecko.java
+private static final HttpUrl URL =
+        HttpUrl.parse("https://api.coingecko.com/api/v3/exchange_rates");
+```
+
+The response is a JSON object with a `rates` map. Only entries with `type == "fiat"` are kept:
+
+```java
+// CoinGecko.java — parse()
+for (Map.Entry<String, ExchangeRateJson> entry : jsonResponse.rates.entrySet()) {
+    if (exchangeRate.type == Type.FIAT) {
+        final Fiat rate = Fiat.parseFiatInexact(symbol, exchangeRate.value);
+        if (rate.signum() > 0)
+            result.add(new ExchangeRateEntry(SOURCE, new ExchangeRate(rate)));
+    }
+}
+```
+
+`ExchangeRatesRepository` calls this at most once every 10 minutes (`UPDATE_FREQ_MS = 10 * DateUtils.MINUTE_IN_MILLIS`) and stores the results via `ExchangeRateDao.insertOrUpdate()`.
+
+You can disable exchange rate fetching entirely at compile time with:
+
+```java
+// Constants.java
+public static final boolean ENABLE_EXCHANGE_RATES = true;
+```
+
+## Feature flags
+
+All major optional features have compile-time boolean flags in `Constants.java`:
+
+```java
+public static final boolean ENABLE_BLOCKCHAIN_SYNC  = true;
+public static final boolean ENABLE_EXCHANGE_RATES   = true;
+public static final boolean ENABLE_SWEEP_WALLET     = true;
+public static final boolean ENABLE_BROWSE           = true;
+```

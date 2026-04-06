@@ -1,0 +1,90 @@
+---
+title: "Sending Bitcoin"
+description: "How to send Bitcoin from your wallet, choose a fee rate, and handle unconfirmed transactions."
+---
+
+## Initiate a send
+
+Tap **Send** on the main screen to open the send dialog. You need to provide a recipient address and an amount before you can broadcast the transaction.
+
+## Enter a recipient address
+
+You can specify the recipient in several ways:
+
+<Steps>
+  <Step title="Scan a QR code">
+    Tap the scan icon in the toolbar to open the camera. Point it at any Bitcoin QR code — the address (and optional amount and label) will populate automatically.
+  </Step>
+  <Step title="Paste from clipboard">
+    Copy a Bitcoin address or URI to your clipboard, then open the send dialog. The app reads the clipboard and pre-fills the address field if it contains a valid value.
+  </Step>
+  <Step title="Type manually">
+    Tap the address field and type or paste the address directly. The app validates the address as you type and shows an error if the format is invalid.
+  </Step>
+  <Step title="NFC tap">
+    Enable NFC on your device, then hold your phone near an NFC tag or another NFC-capable Android device that is showing a payment request. The send dialog opens with the fields pre-populated.
+  </Step>
+  <Step title="Bluetooth">
+    When a payment request is delivered over Bluetooth, enable the **Direct payment** checkbox in the send dialog. The app connects to the merchant device and delivers the signed transaction directly after broadcast.
+  </Step>
+</Steps>
+
+## Bitcoin URI format (BIP-21)
+
+Bitcoin Wallet understands the standard Bitcoin URI scheme defined in BIP-21. You can share or receive payment requests in this format:
+
+```text
+bitcoin:<address>?amount=<btc>&label=<label>
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `address` | The recipient's Bitcoin address (Base58 or Bech32). |
+| `amount`  | Amount in BTC, expressed as a decimal (e.g., `0.005`). Optional. |
+| `label`   | Human-readable label for the recipient. Optional. |
+
+**Example**
+
+```text
+bitcoin:bc1q66u53meh4n3a9crmx7fhgphhw975llz00m8jda?amount=0.01&label=Alice
+```
+
+<Note>
+  If the URI includes an amount, that amount is pre-filled in the send dialog. You can still adjust it before confirming.
+</Note>
+
+## Choose a fee category
+
+Bitcoin Wallet offers three fee categories. Select one from the overflow menu (**⋮ > Fee category**) before tapping **Send**.
+
+<CardGroup cols={3}>
+  <Card title="Economic" icon="leaf">
+    Lowest fee. The transaction will confirm eventually — potentially in days or weeks. Use this when timing is not important.
+  </Card>
+  <Card title="Normal" icon="gauge">
+    Standard fee. Under typical network conditions the transaction confirms within 15 minutes. This is the default and suits most payments.
+  </Card>
+  <Card title="Priority" icon="bolt">
+    Highest fee. Targets confirmation within the next block (roughly 15 minutes) even under congested network conditions. Use this for time-sensitive payments.
+  </Card>
+</CardGroup>
+
+<Tip>
+  The estimated fee for your selected category is shown below the amount field before you confirm. Review it before tapping **Send**.
+</Tip>
+
+## Raise the fee on an unconfirmed transaction (CPFP)
+
+If a transaction you sent is stuck due to a fee that is now too low, you can speed it up using Child-Pays-For-Parent (CPFP). Open the transaction detail from the transaction list and tap **Raise fee**. The app creates a new child transaction that spends your change output with a higher fee, incentivising miners to confirm both transactions together.
+
+<Note>
+  The raise-fee option appears only while the transaction is unconfirmed and your wallet contains a spendable change output from that transaction.
+</Note>
+
+## RBF (replace-by-fee) transactions
+
+Some wallets send transactions with the Replace-By-Fee flag set, signalling that the sender may replace the transaction with a higher-fee version before it confirms.
+
+<Warning>
+  Bitcoin Wallet marks incoming RBF transactions as **risky** because the sender can potentially cancel or redirect the payment before it confirms. Do not treat an unconfirmed RBF transaction as final. Wait for at least one confirmation before releasing goods or services.
+</Warning>

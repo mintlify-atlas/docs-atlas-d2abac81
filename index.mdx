@@ -1,97 +1,56 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Bitcoin Wallet"
+description: "A standalone Bitcoin payment app for Android. No centralized backend required — your keys, your coins."
 ---
 
-## Setting up
+Bitcoin Wallet is an open-source Android app that lets you send and receive Bitcoin directly on the Bitcoin peer-to-peer network. There is no account to create, no server to trust, and no company holding your funds. Your private keys are stored only on your device.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Get Started" icon="rocket" href="/introduction">
+    Learn what Bitcoin Wallet is and how it keeps you in control of your funds.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Installation" icon="mobile" href="/installation">
+    Install the app from Google Play, F-Droid, or build it from source.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Send & Receive" icon="bitcoin-sign" href="/sending-bitcoin">
+    Send bitcoin via QR code, NFC, or Bluetooth, and share your address to receive funds.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Backup & Security" icon="shield-halved" href="/backup-restore">
+    Back up your wallet and protect it with a spending PIN.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Why Bitcoin Wallet?
 
-Everything you need to create world-class documentation.
+<CardGroup cols={3}>
+  <Card title="Truly self-custodial" icon="key">
+    Your private keys never leave your device. No server, no account, no counterparty risk.
+  </Card>
+  <Card title="Full P2P node" icon="network-wired">
+    Connects directly to the Bitcoin network. No middleman between you and the blockchain.
+  </Card>
+  <Card title="Open source" icon="code">
+    Every line of code is publicly auditable on GitHub under the GPLv3 license.
+  </Card>
+</CardGroup>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Get started in minutes
 
-## Need inspiration?
+<Steps>
+  <Step title="Install the app">
+    Download Bitcoin Wallet from [Google Play](https://play.google.com/store/apps/details?id=de.schildbach.wallet) or [F-Droid](https://f-droid.org/packages/de.schildbach.wallet_test/). See [Installation](/installation) for all options.
+  </Step>
+  <Step title="Create your wallet">
+    Open the app. A new HD wallet is automatically created on first launch — no sign-up required.
+  </Step>
+  <Step title="Back up your wallet">
+    Go to **Options → Safety → Back up wallet** and save an encrypted backup to Google Drive or another storage provider.
+  </Step>
+  <Step title="Send or receive bitcoin">
+    Tap **Request** to share your address or QR code, or tap **Send** to pay any Bitcoin address or URI.
+  </Step>
+</Steps>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Note>
+  Bitcoin Wallet uses Testnet by default in development builds. Production builds downloaded from Google Play connect to Bitcoin Mainnet.
+</Note>

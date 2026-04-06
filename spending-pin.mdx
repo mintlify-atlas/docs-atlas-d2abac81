@@ -1,0 +1,54 @@
+---
+title: "Spending PIN"
+description: "Protect your wallet with a spending PIN that encrypts your private keys on-device."
+---
+
+The spending PIN encrypts your private keys using scrypt key derivation. Without the correct PIN, no transaction can be signed — even if someone gains physical access to your device.
+
+<Note>
+  The spending PIN encrypts keys stored on your device. It is separate from your backup password. Both protect different things — set both for maximum security.
+</Note>
+
+## Setting a spending PIN
+
+<Steps>
+  <Step title="Open the PIN dialog">
+    Go to **Options → Safety → Set spending PIN**.
+  </Step>
+  <Step title="Enter and confirm your PIN">
+    Choose a PIN you will remember. There is no recovery mechanism — if you forget your PIN you will need to restore from a backup.
+  </Step>
+  <Step title="Wait for key encryption">
+    The app re-encrypts your private keys using scrypt. This may take a few seconds on slower devices.
+  </Step>
+</Steps>
+
+## Changing or removing your PIN
+
+Go to **Options → Safety → Change spending PIN** or **Remove spending PIN**.
+
+<Note>
+  Wallets that were created before SegWit support was added are automatically upgraded to native SegWit (Bech32) addresses when you change or remove the PIN. This is the intended upgrade path.
+</Note>
+
+## Security details
+
+| Parameter | Value |
+|-----------|-------|
+| Key derivation | scrypt |
+| Iterations (standard) | 65,536 |
+| Iterations (low-RAM devices) | 32,768 |
+| Encryption | Applied to private keys in the wallet file |
+
+These values come directly from `Constants.SCRYPT_ITERATIONS_TARGET` and `Constants.SCRYPT_ITERATIONS_TARGET_LOWRAM` in the source code.
+
+## What the PIN protects
+
+- Every send transaction requires PIN entry before signing.
+- The PIN is never transmitted anywhere — it is used locally to decrypt the keys for the duration of the signing operation.
+
+## If you forget your PIN
+
+<Warning>
+  There is no PIN recovery. If you forget your spending PIN and cannot remove it, you must restore from a backup file using the backup password. See [Backup & restore](/backup-restore) for the PC recovery procedure, which accepts `--password=<PIN>` to decrypt a PIN-protected wallet.
+</Warning>

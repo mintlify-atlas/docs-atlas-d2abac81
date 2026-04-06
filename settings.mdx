@@ -1,0 +1,110 @@
+---
+title: "Settings"
+description: "Reference for all user-accessible settings in Bitcoin Wallet, including display, network, privacy, and diagnostic options."
+---
+
+Access settings by tapping **Options → Settings** from the main wallet screen.
+
+## Display
+
+<AccordionGroup>
+  <Accordion title="Bitcoin denomination">
+    Controls how bitcoin amounts are displayed throughout the app. Available options:
+
+    | Setting | Unit | Example |
+    |---------|------|---------|
+    | BTC | Bitcoin | 0.00100000 BTC |
+    | mBTC | Millibitcoin | 1.00000 mBTC |
+    | µBTC | Microbitcoin | 1,000.00 µBTC |
+    | sat | Satoshi | 100,000 sat |
+
+    The denomination you choose applies to the transaction list, send and receive dialogs, and all amount fields.
+  </Accordion>
+  <Accordion title="Local currency">
+    The fiat currency used for exchange rate display alongside bitcoin amounts. The wallet auto-detects your currency from your device locale on first launch. You can override it here at any time.
+
+    Exchange rates are fetched from CoinGecko and represent a market aggregate rather than a single exchange.
+  </Accordion>
+  <Accordion title="Show local amounts">
+    Toggle whether fiat equivalents are shown next to bitcoin amounts in the transaction list. When disabled, only the bitcoin amount is displayed.
+  </Accordion>
+</AccordionGroup>
+
+## Network
+
+<AccordionGroup>
+  <Accordion title="Sync mode">
+    Controls how the wallet syncs blocks from the network. Two modes are available:
+
+    | Mode | Description |
+    |------|-------------|
+    | **Connection filter** (default) | Enables Bloom filtering (BIP-37). Peers filter blocks server-side before sending them, reducing bandwidth usage at some cost to privacy. |
+    | **Full** | Disables Bloom filtering. The wallet downloads full blocks and filters them locally, improving privacy at the cost of higher data and battery usage. |
+
+    On modern devices with sufficient memory, **Full** mode offers better privacy. Use **Connection filter** on metered or low-bandwidth connections.
+  </Accordion>
+  <Accordion title="Trusted peer">
+    Enter the hostname or IP address of a Bitcoin node to use exclusively. When set, the wallet connects only to that node instead of discovering peers from the network.
+
+    Supported formats:
+    - IPv4 with optional port: `192.0.2.1` or `192.0.2.1:8333`
+    - IPv6 with optional port: `[2001:db8::1]` or `[2001:db8::1]:8333`
+    - Hostname: `node.example.com`
+    - Multiple peers separated by spaces: `node1.example.com node2.example.com`
+
+    Leave blank to use automatic peer discovery.
+  </Accordion>
+</AccordionGroup>
+
+## Payments
+
+<AccordionGroup>
+  <Accordion title="Auto-close after sending">
+    When enabled, the Send coins screen closes automatically after a successful payment. When disabled, the screen stays open so you can review the result or make another payment. Enabled by default.
+  </Accordion>
+  <Accordion title="Own Bluetooth address">
+    Sets the Bluetooth MAC address included in your payment requests, enabling customers to pay you over Bluetooth without an internet connection. Intended for merchant use. See [Bluetooth payments](/bluetooth-payments) for setup instructions.
+  </Accordion>
+  <Accordion title="Own name">
+    A label or memo added to outgoing payment requests. Recipients will see this name alongside your Bitcoin address in their wallet if their software supports BIP-70 payment protocol labels.
+  </Accordion>
+</AccordionGroup>
+
+## System
+
+<AccordionGroup>
+  <Accordion title="Data usage">
+    Opens the Android system data usage settings page for Bitcoin Wallet. Use this to monitor or restrict background data consumption.
+  </Accordion>
+  <Accordion title="Notifications">
+    Opens the Android system notification settings for Bitcoin Wallet. Use this to control which notification channels are active, including transaction received alerts and the ongoing sync notification.
+  </Accordion>
+  <Accordion title="App language (Android 13+)">
+    On Android 13 and later, you can set the wallet's display language independently of your system language. Tap this setting to choose from the available translations. On earlier Android versions this option is not shown; the wallet follows the system language.
+  </Accordion>
+</AccordionGroup>
+
+## Support
+
+<AccordionGroup>
+  <Accordion title="Report issue">
+    Generates a diagnostic report containing log files and device information, then opens your email client with the report attached and the developer address pre-filled. Replace the recipient address if you want to send the report to yourself first.
+
+    You can also trigger a report from the command line during development:
+
+    ```shell
+    adb logcat
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Diagnostics
+
+<AccordionGroup>
+  <Accordion title="Extended public key">
+    Displays the wallet's extended public key (xpub). You can share this with a watch-only wallet app to monitor your balance and transaction history without exposing your private keys or spending ability.
+  </Accordion>
+  <Accordion title="About">
+    Shows the current app version number and build flavor. Tap the version number to reveal the APK checksum, which you can use to verify the integrity of the installed app against the published binary.
+  </Accordion>
+</AccordionGroup>

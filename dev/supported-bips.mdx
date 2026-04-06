@@ -1,0 +1,58 @@
+---
+title: "Supported Bitcoin Improvement Proposals"
+description: "A complete list of the Bitcoin Improvement Proposals (BIPs) and other specifications implemented by Bitcoin Wallet."
+---
+
+The table below lists every specification that Bitcoin Wallet implements. Partially supported or deliberately unsupported proposals are described separately.
+
+<Note>
+  These lists are not exhaustive. bitcoinj may implement additional specifications that Bitcoin Wallet inherits implicitly.
+</Note>
+
+## Fully supported
+
+| Specification | Title |
+|---|---|
+| [BIP-13](https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki) | Address format for pay-to-script-hash |
+| [BIP-14](https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki) | Protocol version and user agent |
+| [BIP-21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki) | URI scheme for making Bitcoin payments |
+| [BIP-31](https://github.com/bitcoin/bips/blob/master/bip-0031.mediawiki) | Pong message |
+| [BIP-32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) | Hierarchical deterministic wallets |
+| [BIP-35](https://github.com/bitcoin/bips/blob/master/bip-0035.mediawiki) | Mempool message |
+| [BIP-37](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki) | Connection bloom filtering |
+| [BIP-38](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki) | Passphrase-protected private key |
+| [BIP-43](https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki) | Purpose field for deterministic wallets |
+| [BIP-66](https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki) | Strict DER signatures |
+| [BIP-70](https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki) | Payment protocol |
+| [BIP-71](https://github.com/bitcoin/bips/blob/master/bip-0071.mediawiki) | Payment protocol MIME types |
+| [BIP-111](https://github.com/bitcoin/bips/blob/master/bip-0111.mediawiki) | NODE_BLOOM service bit |
+| [BIP-141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) | Segregated Witness (consensus layer) |
+| [BIP-143](https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki) | Transaction signature verification for version 0 witness program |
+| [BIP-144](https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki) | Segregated Witness (peer services) |
+| [BIP-159](https://github.com/bitcoin/bips/blob/master/bip-0159.mediawiki) | NODE_NETWORK_LIMITED service bit |
+| [BIP-173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki) | Base32 address format for native v0–16 witness outputs |
+| [RFC 6979](https://tools.ietf.org/html/rfc6979) | Deterministic usage of ECDSA |
+
+## Partially supported or deliberately unsupported
+
+### BIP-44 — Multi-account hierarchy for deterministic wallets
+
+[BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) is **deliberately not supported**.
+
+BIP-44 requires wallets to support multiple accounts per seed phrase. Bitcoin Wallet instead uses BIP-32 with a single account by design, to keep the user experience simple.
+
+<Warning>
+  Wallets derived from BIP-32 and BIP-44 are **not interchangeable** even for the same seed phrase. If you import a Bitcoin Wallet seed into a BIP-44-compatible wallet (or vice versa), you will see a different transaction history and different addresses.
+</Warning>
+
+### BIP-72 — `bitcoin:` URI extensions for payment protocol
+
+[BIP-72](https://github.com/bitcoin/bips/blob/master/bip-0072.mediawiki) is **partially supported**.
+
+The spec recommends that wallets ignore the address, amount, label, and message fields in the URI when a `request` parameter is present. Bitcoin Wallet does **not** follow this recommendation. Instead, when you use the `request` parameter, you must do one of the following:
+
+1. Supply an `address` and optionally an `amount` whose values exactly match the corresponding fields in the linked `PaymentDetails` message. The linked payment request must contain exactly one output, and that output's script must be one of: `pay-to-pubkey`, `pay-to-pubkey-hash`, `pay-to-witness-pubkey-hash`, or `pay-to-script-hash`.
+
+2. Supply an `h` parameter containing the unpadded Base64URL-encoded SHA-256 hash of the linked payment request bytes.
+
+If neither condition is met, the linked payment request is rejected.

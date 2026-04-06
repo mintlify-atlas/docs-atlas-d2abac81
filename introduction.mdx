@@ -1,0 +1,48 @@
+---
+title: "Introduction"
+description: "Bitcoin Wallet is a standalone, open-source Android app for sending and receiving bitcoin — no centralized backend required."
+---
+
+Bitcoin Wallet is a self-contained Android application for sending and receiving bitcoin. It connects directly to the Bitcoin peer-to-peer network using [bitcoinj](https://bitcoinj.org), so no centralized server or third-party service sits between you and the blockchain.
+
+The app is created and maintained by **Andreas Schildbach** and is released under the [GNU General Public License v3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html). The mainnet build is available on Google Play (`de.schildbach.wallet`); a testnet build is available for development and testing purposes.
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="HD wallet (BIP-32)" icon="key">
+    All your addresses are derived from a single secret seed created at first launch. One backup covers every address your wallet will ever generate.
+  </Card>
+  <Card title="SegWit Bech32 addresses" icon="bitcoin-sign">
+    New wallets use native SegWit P2WPKH addresses by default, giving you lower fees and stronger transaction integrity.
+  </Card>
+  <Card title="Built-in P2P node" icon="network-wired">
+    The app syncs directly with the Bitcoin network. No account, no sign-up, and no single point of failure.
+  </Card>
+  <Card title="NFC & Bluetooth payments" icon="nfc">
+    Pay or request coins by tapping devices together over NFC or connecting via Bluetooth — even without internet access.
+  </Card>
+  <Card title="Encrypted backups" icon="lock">
+    Manual backups are password-encrypted and stored via the Android Storage Access Framework (typically Google Drive or another provider of your choice).
+  </Card>
+  <Card title="Taproot support" icon="code-branch">
+    You can send to Bech32m (Taproot) addresses, keeping you compatible with the latest Bitcoin output types.
+  </Card>
+</CardGroup>
+
+## Supported Bitcoin standards
+
+| Specification | Description |
+|---|---|
+| BIP-21 | URI scheme for payment requests (`bitcoin:…`) |
+| BIP-32 | Hierarchical deterministic (HD) wallets |
+| BIP-38 | Passphrase-protected paper wallet private keys |
+| BIP-70 | Payment protocol (for Bluetooth and NFC payments) |
+| BIP-141 / 143 / 144 | Segregated Witness (SegWit) |
+| BIP-173 | Bech32 native SegWit address encoding |
+
+## Mainnet vs. testnet
+
+The **mainnet** build (`de.schildbach.wallet`) is published on Google Play and operates on the live Bitcoin network with real funds.
+
+The **testnet / dev** build (`de.schildbach.wallet_test`) targets Bitcoin Testnet and is intended for development and experimentation. Its app icon is grey to help you tell the two apart at a glance.
